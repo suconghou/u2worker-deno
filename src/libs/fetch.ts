@@ -39,9 +39,29 @@ export const ajax = async (url: string): Promise<string> => {
     const init = {
         headers,
         method: 'GET',
-    } as any
+    } as RequestInit
     const r = await fetch(url, init)
     text = await r.text()
     set(url, text)
+    return text
+}
+
+export const doPost = async (url: string, body: string, cacheKey: string): Promise<string> => {
+    let text = get(cacheKey)
+    if (text) {
+        return text
+    }
+    const init = {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:74.0) Gecko/20100101 Firefox/74.0',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: body,
+    } as RequestInit
+    const r = await fetch(url, init)
+    text = await r.text()
+    set(cacheKey, text)
     return text
 }
