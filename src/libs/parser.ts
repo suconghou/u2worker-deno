@@ -98,7 +98,7 @@ class infoParser {
             info['error'] = this.error
             return info
         }
-        for (let item of this.streamingData.formats) {
+        for (let item of (this.streamingData.formats || [])) {
             const itag = String(item.itag)
             const s = {
                 "quality": item.qualityLabel || item.quality,
@@ -109,7 +109,7 @@ class infoParser {
             } as any
             streams[itag] = s
         }
-        for (let item of this.streamingData.adaptiveFormats) {
+        for (let item of (this.streamingData.adaptiveFormats) || []) {
             const itag = String(item.itag)
             const s = {
                 "quality": item.qualityLabel || item.quality,
