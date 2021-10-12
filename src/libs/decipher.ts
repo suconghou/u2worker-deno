@@ -1,10 +1,10 @@
 export default class {
-    private tokens: any
+    private tokens: string[] = [];
     constructor(private bodystr: string) {
         this.init();
     }
 
-    private async init() {
+    private init() {
         const bodystr = this.bodystr;
         const objResult = bodystr.match(/var ([a-zA-Z_\$][a-zA-Z_0-9]*)=\{((?:(?:[a-zA-Z_\$][a-zA-Z_0-9]*:function\(a\)\{(?:return )?a\.reverse\(\)\}|[a-zA-Z_\$][a-zA-Z_0-9]*:function\(a,b\)\{return a\.slice\(b\)\}|[a-zA-Z_\$][a-zA-Z_0-9]*:function\(a,b\)\{a\.splice\(0,b\)\}|[a-zA-Z_\$][a-zA-Z_0-9]*:function\(a,b\)\{var c=a\[0\];a\[0\]=a\[b(?:%a\.length)?\];a\[b(?:%a\.length)?\]=c(?:;return a)?\}),?\n?)+)\};/)
         if (!objResult) {
@@ -49,13 +49,13 @@ export default class {
         this.tokens = tokens
     }
 
-    async decode(s: string): Promise<string> {
+    decode(s: string): string {
         if (!this.tokens) {
-            await this.init()
+            this.init()
         }
         let sig = s.split('')
         let pos = 0
-        for (let tok of this.tokens) {
+        for (const tok of this.tokens) {
             if (tok.length > 1) {
                 pos = ~~tok.slice(1);
             }
@@ -63,11 +63,12 @@ export default class {
                 case 'r':
                     sig = sig.reverse();
                     break
-                case 'w':
-                    const tmp = sig[0]
-                    sig[0] = sig[pos]
-                    sig[pos] = tmp
+                case 'w': {
+                    const tmp = sig[0];
+                    sig[0] = sig[pos];
+                    sig[pos] = tmp;
                     break
+                }
                 case 's':
                     sig = sig.slice(pos);
                     break

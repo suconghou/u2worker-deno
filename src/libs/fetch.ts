@@ -18,13 +18,13 @@ const get = (key: string) => {
     }
 }
 
-const set = (key: string, value: any, ttl: number = 3600e3) => {
+const set = (key: string, value: unknown, ttl = 3600e3) => {
     cache.set(key, { value, expire: +new Date() + ttl })
 }
 
 const expire = () => {
     const t = +new Date()
-    for (let [k, v] of cache) {
+    for (const [k, v] of cache) {
         if (v.expire < t) {
             cache.delete(k)
         }

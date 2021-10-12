@@ -8,10 +8,10 @@ class infoParser {
     private videoPageURL: string
     private playerURL = "https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
     private decipher: decipher | null = null;
-    private jsPath: string = '';
+    private jsPath  = '';
     private videoDetails: any;
     private streamingData: any;
-    private error: string = '';
+    private error = '';
 
     constructor(private vid: string, private fetch: Function, private doPost: Function) {
         this.videoPageURL = `${baseURL}/watch?v=${vid}`
@@ -20,7 +20,7 @@ class infoParser {
     async init() {
         try {
             await this.playerParse()
-        } catch (e) {
+        } catch (_) {
             await this.pageParse()
         }
 
@@ -44,7 +44,7 @@ class infoParser {
     }
 
     private async pageParse() {
-        let jsPath: string = '';
+        let jsPath = '';
         const text = await this.fetch(this.videoPageURL)
         if (!text) {
             throw new Error("get page data failed");
@@ -77,7 +77,7 @@ class infoParser {
         const ps = data.playabilityStatus
         const s = ps.status
         if (s != "OK") {
-            let reason = ps.reason || s;
+            const reason = ps.reason || s;
             throw new Error(reason)
         }
         return [data.videoDetails, data.streamingData];
@@ -96,7 +96,7 @@ class infoParser {
             info['error'] = this.error
             return info
         }
-        for (let item of (this.streamingData.formats || []).concat(this.streamingData.adaptiveFormats || [])) {
+        for (const item of (this.streamingData.formats || []).concat(this.streamingData.adaptiveFormats || [])) {
             const itag = String(item.itag)
             const s = {
                 "quality": item.qualityLabel || item.quality,
